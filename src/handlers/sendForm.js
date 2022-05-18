@@ -40,6 +40,11 @@ async function sendForm(event, context) {
   }
 
   return {
+    headers: {
+      "Content-type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
     statusCode: 200,
     body: JSON.stringify("Success!"),
   };

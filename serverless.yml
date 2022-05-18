@@ -50,6 +50,7 @@ functions:
       - http:
           method: POST
           path: /send-form
+          cors: true
   saveForm:
     handler: src/handlers/saveForm.handler
     description: A function triggered by SQS and saves form data to DB
