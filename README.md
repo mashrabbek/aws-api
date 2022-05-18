@@ -12,6 +12,9 @@
 npm install -g serverless
 npm install
 sls deploy --verbose
+
+sls remove
+
 ```
 
 You are ready to use API!
