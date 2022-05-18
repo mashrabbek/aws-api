@@ -1,0 +1,7 @@
+SsnIAM:
+  Effect: Allow
+  Action:
+    - SNS:Publish
+    - SNS:Subscribe
+  Resource:
+    - ${self:custom.MyTopic.arn}

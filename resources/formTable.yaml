@@ -1,0 +1,11 @@
+FormTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: FormTable-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: messageTitle
+        AttributeType: S
+    KeySchema:
+      - AttributeName: messageTitle
+        KeyType: HASH

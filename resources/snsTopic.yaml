@@ -1,0 +1,37 @@
+MyTopic:
+  Type: AWS::SNS::Topic
+  Properties:
+    TopicName: MyTopic-${self:provider.stage}
+    DisplayName: My Topic for Final Project
+    Subscription:
+      - Endpoint: akbarov.dev@gmail.com
+        Protocol: email
+
+MyTopicPolicy:
+  Type: AWS::SNS::TopicPolicy
+  Properties:
+    Topics:
+      - !Ref MyTopic
+    PolicyDocument:
+      Id: MyTopicPolicyId
+      Version: "2012-10-17"
+      Statement:
+        - Sid: Stmt1643807474528
+          Effect: Allow
+          Action:
+            - SNS:GetTopicAttributes
+            - SNS:SetTopicAttributes
+            - SNS:AddPermission
+            - SNS:RemovePermission
+            - SNS:DeleteTopic
+            - SNS:Subscribe
+            - SNS:ListSubscriptionsByTopic
+            - SNS:Publish
+          Resource: !Ref MyTopic
+          Principal:
+            AWS: "*"
+#"Condition": {
+#        "StringEquals": {
+#          "AWS:SourceOwner": "657171573061"
+#        }
+#      }

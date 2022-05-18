@@ -1,0 +1,58 @@
+service: portfolio-back
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  environment:
+    SNS_TOPIC_ARN: ${self:custom.MyTopic.arn}
+    SNS_TOPIC_NAME: ${self:custom.MyTopic.name}
+    MY_QUEUE_URL: ${self:custom.MyQueue.url}
+    FORM_TABLE_NAME: ${self:custom.FormTable.name}
+  iamRoleStatements:
+    - ${file(iam/MyTopicSnsIAM.yaml):SsnIAM}
+    - ${file(iam/FormTableIAM.yaml):FormTableIAM}
+    - ${file(iam/MyQueueIAM.yaml):QueueIAM}
+
+resources:
+  Resources:
+    MyTopic: ${file(resources/snsTopic.yaml):MyTopic}
+    MyTopicPolicy: ${file(resources/snsTopic.yaml):MyTopicPolicy}
+    MyQueue: ${file(resources/mySqs.yaml):MyQueue}
+    MyQueuePolicy: ${file(resources/mySqs.yaml):MyQueuePolicy}
+    FormTable: ${file(resources/formTable.yaml):FormTable}
+
+custom:
+  MyTopic:
+    arn: !Ref MyTopic
+    name: !GetAtt MyTopic.TopicName
+  FormTable:
+    name: !Ref FormTable
+    arn: !GetAtt FormTable.Arn
+  MyQueue:
+    url: !Ref MyQueue
+    name: !GetAtt MyQueue.QueueName
+    arn: !GetAtt MyQueue.Arn
+  bundle:
+    linting: false
+
+functions:
+  sendForm:
+    handler: src/handlers/sendForm.handler
+    description: function to recieve form data and send it to SQS and SNS
+    events:
+      - http:
+          method: POST
+          path: /send-form
+  saveForm:
+    handler: src/handlers/saveForm.handler
+    description: A function triggered by SQS and saves form data to DB
+    events:
+      - sqs:
+          arn: ${self:custom.MyQueue.arn}

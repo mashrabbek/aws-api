@@ -1,0 +1,21 @@
+MyQueue:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: MyQueue-${self:provider.stage}
+
+MyQueuePolicy:
+  Type: AWS::SQS::QueuePolicy
+  Properties:
+    Queues:
+      - !Ref MyQueue
+    PolicyDocument:
+      Id: MyQueuePolicy
+      Version: "2012-10-17"
+      Statement:
+        - Sid: Allow-User-SendMessage
+          Effect: Allow
+          Principal:
+            AWS: "*"
+          Action:
+            - SQS:*
+          Resource: !Ref MyQueue

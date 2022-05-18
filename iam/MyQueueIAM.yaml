@@ -1,0 +1,9 @@
+QueueIAM:
+  Effect: Allow
+  Action:
+    - SQS:SendMessage
+    - SQS:ReceiveMessage
+    - SQS:GetQueueUrl
+    - SQS:GetQueueAttributes
+  Resource:
+    - ${self:custom.MyQueue.arn}
